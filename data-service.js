@@ -7,36 +7,74 @@ import {
   serverTimestamp,
 } from "./firebase-config.js";
 
-// ... fungsi lain (getLanguages, addLanguage, getWordsByLetter, addWord) kekalkan ...
+/* =======================
+   LANGUAGES
+======================= */
 
-export async function getElementsForWord(userId, languageId, wordId) {
-  const elementsRef = collection(
-    db,
-    "users",
-    userId,
-    "languages",
-    languageId,
-    "words",
-    wordId,
-    "elements"
-  );
-  const snap = await getDocs(elementsRef);
-  const elements = [];
-  snap.forEach((d) => {
-    elements.push({ id: d.id, ...d.data() });
+export async function getLanguages(userId) {
+  const ref = collection(db, "users", userId, "languages");
+  const snap = await getDocs(ref);
+  const list = [];
+  snap.forEach((doc) => {
+    list.push({ id: doc.id, ...doc.data() });
   });
-  return elements;
+  return list;
 }
 
-export async function addElementHtml(
-  userId,
-  languageId,
-  wordId,
-  title,
-  htmlContent,
-  type
-) {
-  const elementsRef = collection(
+export async function addLanguage(userId, name) {
+  const ref = collection(db, "users", userId, "languages");
+  await addDoc(ref, {
+    name,
+    createdAt: serverTimestamp(),
+  });
+}
+
+/* =======================
+   WORDS
+======================= */
+
+export async function getWordsByLetter(userId, languageId, letter) {
+  const ref = collection(
+    db,
+    "users",
+    userId,
+    "languages",
+    languageId,
+    "words"
+  );
+  const snap = await getDocs(ref);
+  const list = [];
+  snap.forEach((doc) => {
+    const data = doc.data();
+    if (data.word && data.word[0].toUpperCase() === letter.toUpperCase()) {
+      list.push({ id: doc.id, ...data });
+    }
+  });
+  return { words: list, total: list.length };
+}
+
+export async function addWord(userId, languageId, word) {
+  const ref = collection(
+    db,
+    "users",
+    userId,
+    "languages",
+    languageId,
+    "words"
+  );
+  await addDoc(ref, {
+    word,
+    letter: word[0].toUpperCase(),
+    createdAt: serverTimestamp(),
+  });
+}
+
+/* =======================
+   ELEMENTS
+======================= */
+
+export async function getElementsForWord(userId, languageId, wordId) {
+  const ref = collection(
     db,
     "users",
     userId,
@@ -46,14 +84,31 @@ export async function addElementHtml(
     wordId,
     "elements"
   );
+  const snap = await getDocs(ref);
+  const list = [];
+  snap.forEach((doc) => {
+    list.push({ id: doc.id, ...doc.data() });
+  });
+  return list;
+}
 
-  const docRef = await addDoc(elementsRef, {
+export async function addElementHtml(userId, languageId, wordId, title, htmlContent, type) {
+  const ref = collection(
+    db,
+    "users",
+    userId,
+    "languages",
+    languageId,
+    "words",
+    wordId,
+    "elements"
+  );
+  const docRef = await addDoc(ref, {
     title,
     content: htmlContent,
     type: type || "Umum",
     createdAt: serverTimestamp(),
   });
-
   return {
     id: docRef.id,
     title,
