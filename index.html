@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Kamus Hafalan</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" href="icon-192.png" />
+  <meta name="theme-color" content="#4f46e5" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="nav-left">
+      <span class="app-title">Kamus Hafalan</span>
+      <span id="navBreadcrumb" class="breadcrumb"></span>
+    </div>
+    <div class="nav-right">
+      <span id="navUserEmail" class="userEmail"></span>
+      <button id="btnLogin" class="btnPrimary">Login</button>
+      <button id="btnLogout" class="btnSecondary hidden">Logout</button>
+    </div>
+  </header>
+
+  <main id="app" class="pageContainer">
+    <div class="centerBox">
+      <h2>Selamat Datang</h2>
+      <p>Sila log masuk untuk mula membina Kamus Hafalan anda.</p>
+    </div>
+  </main>
+
+  <script type="module" src="app.js"></script>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("sw.js");
+    }
+  </script>
+</body>
+</html>
