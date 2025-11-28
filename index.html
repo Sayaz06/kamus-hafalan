@@ -2,40 +2,49 @@
 <html lang="ms">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Kamus Hafalan</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
 
+  <!-- Manifest untuk PWA -->
   <link rel="manifest" href="manifest.json" />
-  <link rel="icon" href="icon-192.png" />
-  <meta name="theme-color" content="#4f46e5" />
+
+  <!-- Styles -->
   <link rel="stylesheet" href="styles.css" />
 </head>
-
 <body>
+  <!-- ✅ Navbar -->
   <header class="navbar">
     <div class="nav-left">
-      <span class="app-title">Kamus Hafalan</span>
-      <span id="navBreadcrumb" class="breadcrumb"></span>
+      <div class="nav-top-row">
+        <span class="app-title">Kamus Hafalan</span>
+        <button id="btnBack" class="btnBack hidden">←</button>
+      </div>
+      <div class="breadcrumb" id="breadcrumb">Bahasa</div>
     </div>
     <div class="nav-right">
       <span id="navUserEmail" class="userEmail"></span>
-      <button id="btnLogin" class="btnPrimary">Login</button>
-      <button id="btnLogout" class="btnSecondary hidden">Logout</button>
+      <button id="btnLogin" class="btnPrimary">Log Masuk</button>
+      <button id="btnLogout" class="btnSecondary hidden">Log Keluar</button>
     </div>
   </header>
 
-  <main id="app" class="pageContainer">
-    <div class="centerBox">
-      <h2>Selamat Datang</h2>
-      <p>Sila log masuk untuk mula membina Kamus Hafalan anda.</p>
-    </div>
-  </main>
+  <!-- ✅ Root app container -->
+  <main id="app"></main>
 
+  <!-- ✅ Firebase & App Scripts -->
+  <!-- Firebase v10 modular -->
+  <script type="module" src="firebase-config.js"></script>
+  <script type="module" src="data-service.js"></script>
   <script type="module" src="app.js"></script>
 
+  <!-- ✅ Service Worker Registration -->
   <script>
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register("sw.js");
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("sw.js").catch(err => {
+          console.log("SW registration failed:", err);
+        });
+      });
     }
   </script>
 </body>
