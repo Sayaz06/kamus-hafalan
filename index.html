@@ -4,47 +4,93 @@
   <meta charset="UTF-8" />
   <title>Kamus Hafalan</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-
-  <!-- Manifest untuk PWA -->
   <link rel="manifest" href="manifest.json" />
-
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="style.css" />
 </head>
+
 <body>
-  <!-- ✅ Navbar -->
-  <header class="navbar">
-    <div class="nav-left">
-      <div class="nav-top-row">
-        <span class="app-title">Kamus Hafalan</span>
-        <button id="btnBack" class="btnBack hidden">←</button>
-      </div>
-      <div class="breadcrumb" id="breadcrumb">Bahasa</div>
-    </div>
-    <div class="nav-right">
-      <span id="navUserEmail" class="userEmail"></span>
-      <button id="btnLogin" class="btnPrimary">Log Masuk</button>
-      <button id="btnLogout" class="btnSecondary hidden">Log Keluar</button>
-    </div>
+
+  <header>
+    <h1>Kamus Hafalan</h1>
+    <p id="userInfo">Checking auth...</p>
+    <button id="logoutBtn">Logout</button>
   </header>
 
-  <!-- ✅ Root app container -->
-  <main id="app"></main>
+  <main>
 
-  <!-- ✅ Firebase & App Scripts -->
-  <!-- Firebase v10 modular -->
-  <script type="module" src="firebase-config.js"></script>
-  <script type="module" src="data-service.js"></script>
-  <script type="module" src="app.js"></script>
+    <!-- AUTH SECTION -->
+    <section id="authSection">
+      <h2>Log Masuk</h2>
+      <p>Gunakan Google untuk mula menyusun kamus hafalan anda.</p>
+      <button id="googleLoginBtn">Login dengan Google</button>
+    </section>
 
-  <!-- ✅ Service Worker Registration -->
+    <!-- APP SECTION -->
+    <section id="appSection" style="display:none;">
+
+      <nav>
+        <button id="tabLanguagesBtn" type="button">Bahasa</button>
+        <button id="tabWordsBtn" type="button">Perkataan</button>
+        <button id="tabElementsBtn" type="button">Elemen</button>
+      </nav>
+
+      <!-- VIEW: BAHASA -->
+      <section id="languagesView">
+        <h2>Bahasa</h2>
+        <form id="addLanguageForm">
+          <input id="languageName" type="text" placeholder="Nama bahasa (contoh: Bahasa Melayu, English)" required />
+          <button type="submit">Tambah Bahasa</button>
+        </form>
+        <ul id="languageList"></ul>
+      </section>
+
+      <!-- VIEW: HURUF + PERKATAAN -->
+      <section id="wordsView" style="display:none;">
+        <h2 id="wordsHeader">Perkataan</h2>
+        <p id="wordsContext"></p>
+
+        <div id="letterList"></div>
+
+        <h3>Perkataan untuk huruf dipilih</h3>
+        <form id="addWordForm">
+          <input id="wordText" type="text" placeholder="Perkataan baharu" required />
+          <button type="submit">Tambah Perkataan</button>
+        </form>
+        <ul id="wordList"></ul>
+      </section>
+
+      <!-- VIEW: ELEMEN (AYAT / NOTA) -->
+      <section id="elementsView" style="display:none;">
+        <h2 id="elementsHeader">Elemen Hafalan</h2>
+        <p id="elementsContext"></p>
+
+        <form id="addElementForm">
+          <input id="elementTitle" type="text" placeholder="Tajuk elemen (contoh: Ayat contoh 1, Nota ringkas)" required />
+          <select id="elementTemplate">
+            <option value="">Tiada template</option>
+            <option value="sentence">Ayat Biasa</option>
+            <option value="paragraph">Perenggan Karangan</option>
+            <option value="note">Nota Ringkas</option>
+          </select>
+          <textarea id="elementContent" rows="6" placeholder="Isi elemen di sini..."></textarea>
+          <button type="submit">Simpan Elemen</button>
+        </form>
+
+        <h3>Senarai elemen</h3>
+        <ul id="elementList"></ul>
+      </section>
+
+    </section>
+
+  </main>
+
+  <!-- DARK MODE BUTTON -->
+  <button id="themeToggle">Dark Mode</button>
+
+  <script type="module" src="main.js"></script>
   <script>
     if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("sw.js").catch(err => {
-          console.log("SW registration failed:", err);
-        });
-      });
+      navigator.serviceWorker.register("service-worker.js");
     }
   </script>
 </body>
